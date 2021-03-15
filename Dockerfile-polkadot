@@ -1,0 +1,6 @@
+FROM paritytech/ci-linux:production as builder
+
+RUN git clone https://github.com/paritytech/polkadot.git &&\
+	cd polkadot &&\
+	git checkout 72243baaedf3ded4226032949a23f8478f5565d9 &&\
+	cargo build --features=real-overseer --release

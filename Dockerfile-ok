@@ -1,0 +1,26 @@
+FROM paritytech/ci-linux:production as builder
+
+RUN git clone https://github.com/substrate-developer-hub/substrate-parachain-template.git
+
+RUN cd substrate-parachain-template &&\
+  git checkout 04d3546 &&\
+  cargo build
+
+RUN git clone https://github.com/paritytech/polkadot.git &&\
+	cd polkadot &&\
+	git checkout 9bc891 &&\
+	cargo build --features=real-overseer
+
+RUN apt-get update && apt-get install -y nodejs npm
+
+RUN mkdir /test
+
+WORKDIR /test
+
+COPY package.json .
+
+RUN npm install
+
+COPY registerPara.js test-docker.sh ./
+
+RUN ./test-docker.sh

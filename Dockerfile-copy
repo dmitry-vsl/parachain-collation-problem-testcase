@@ -1,0 +1,22 @@
+FROM ubuntu:focal
+
+COPY polkadot /polkadot
+COPY parachain-collator /parachain-collator
+
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV TZ="Europe/London"
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN apt-get update && apt-get install -y nodejs npm
+
+RUN mkdir /test
+
+WORKDIR /test
+
+COPY package.json .
+
+RUN npm install
+
+COPY registerPara.js test-docker-copy.sh ./
+
+RUN ./test-docker-copy.sh
